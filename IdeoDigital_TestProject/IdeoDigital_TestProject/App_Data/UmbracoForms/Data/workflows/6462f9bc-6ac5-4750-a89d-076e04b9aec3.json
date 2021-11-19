@@ -1,0 +1,18 @@
+{
+  "id": "6462f9bc-6ac5-4750-a89d-076e04b9aec3",
+  "name": "Login Post",
+  "form": "3af4405a-0a69-4938-8fff-9b2646d8eb9c",
+  "active": true,
+  "includeSensitiveData": "True",
+  "workflowTypeId": "fd02c929-4e7d-4f90-b9fa-13d074a76688",
+  "executesOn": "Submitted",
+  "settings": {
+    "Url": "https://localhost:44327/umbraco/api/login/login",
+    "Method": "POST",
+    "StandardFields": "",
+    "Fields": "[{\"alias\":\"email\",\"value\":\"ad24f3c8-8141-4517-cf6e-04647f4f5131\",\"staticValue\":\"\",\"$$hashKey\":\"object:5634\"},{\"alias\":\"password\",\"value\":\"472031bc-2e83-4808-9733-a8c6715ad1d8\",\"staticValue\":\"\",\"$$hashKey\":\"object:5638\"}]",
+    "Username": "dimonkalibaba@gmail.com",
+    "Password": "dimasik_kalibis"
+  },
+  "sortOrder": 0
+}
