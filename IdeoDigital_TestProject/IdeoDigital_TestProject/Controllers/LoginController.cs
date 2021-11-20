@@ -8,31 +8,40 @@ using LightInject;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 using Newtonsoft.Json.Serialization;
+using Umbraco.Web;
+using Umbraco.Core.Models.PublishedContent;
+using System.Net;
+
 namespace IdeoDigital_TestProject.Controllers
 {
     public class LoginController : UmbracoApiController
     {
         [HttpPost]
-        public MemberViewModel Login(CredentialsPostModel model)
+        [Obsolete]
+        public object Login(CredentialsPostModel model)
         {
-            if(Members.Login(model.Email, model.Password))
+            if(!string.IsNullOrEmpty(model.Email) 
+                && !string.IsNullOrEmpty(model.Password)
+                && Members.Login(model.Email, model.Password))
             {
                var memberService = Services.MemberService;
                var member = memberService.GetByEmail(model.Email);
+               
+                var iconInfo= member.GetValue("icon").ToString();
+                var icon = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<IconModel>>(iconInfo);
+                var iconId = new Guid(icon.FirstOrDefault().MediaKey);         
+                var iconUrl = Umbraco.Media(iconId).Url(mode: UrlMode.Absolute);
                 var viewModel = new MemberViewModel
                 {
                     FirstName = (string)member.GetValue("firstName"),
                     LastName = (string)member.GetValue("lastName"),
                     Email = member.Email,
-                    Phone = member.GetValue("phone")
+                    Phone = member.GetValue("phone"),
+                    IconUrl = iconUrl
                 };
-                var iconStr= member.GetValue("icon").ToString();
-                var icon = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<IconModel>>(iconStr);
-                var mediaService = Services.MediaService;
-                var i = mediaService.GetById(new Guid(icon.FirstOrDefault().MediaKey));
                 return viewModel;
             }
-            return null;
+            throw new HttpResponseException(HttpStatusCode.Forbidden);
         }
     }
 }

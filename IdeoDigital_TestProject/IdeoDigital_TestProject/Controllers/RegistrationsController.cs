@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 using IdeoDigital_TestProject.Models;
@@ -17,13 +18,12 @@ namespace IdeoDigital_TestProject.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return;
+                throw new HttpResponseException(HttpStatusCode.Forbidden);
             }
             var memberService = Services.MemberService;
-            var mediaService = Services.MediaService;
             if(memberService.GetByEmail(model.Email) != null)
             {
-                return;
+                throw new HttpResponseException(HttpStatusCode.Forbidden);
             }
             var member = memberService.CreateMemberWithIdentity(model.Email, model.Email, model.FirstName, "myMember");
             memberService.SavePassword(member, model.Password);

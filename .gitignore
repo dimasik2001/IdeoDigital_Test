@@ -30,3 +30,10 @@
 
 # Ignore the Models Builder models out of date flag
 **/ood.flag
+IdeoDigital_TestProject/.vs/
+IdeoDigital_TestProject/IdeoDigital_TestProject/App_Data/packages/createdPackages.config
+IdeoDigital_TestProject/IdeoDigital_TestProject/bin/
+IdeoDigital_TestProject/packages/
+IdeoDigital_TestProject/IdeoDigital_TestProject/obj/Debug/IdeoDigital_TestProject.csproj.CoreCompileInputs.cache
+IdeoDigital_TestProject/IdeoDigital_TestProject/obj/
+IdeoDigital_TestProject/IdeoDigital_TestProject/Umbraco/

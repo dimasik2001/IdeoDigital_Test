@@ -11,6 +11,6 @@ namespace IdeoDigital_TestProject.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public object Phone { get; set; }
-        public string IconPath { get; set; }
+        public string IconUrl{ get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace IdeoDigital_TestProject.Models
         public string Phone { get; set; }
         [Required]
         public string Password { get; set; }
-        public string IconPath { get; set; }
+        public string Icon { get; set; }
         
     }
 }
