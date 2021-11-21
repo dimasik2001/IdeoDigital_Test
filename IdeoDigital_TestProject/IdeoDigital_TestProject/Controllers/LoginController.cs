@@ -20,24 +20,32 @@ namespace IdeoDigital_TestProject.Controllers
         [Obsolete]
         public object Login(CredentialsPostModel model)
         {
-            if(!string.IsNullOrEmpty(model.Email) 
-                && !string.IsNullOrEmpty(model.Password)
-                && Members.Login(model.Email, model.Password))
+            var isLogin = Members.Login(model.Email, model.Password);
+            if (ModelState.IsValid
+                && isLogin)
             {
                var memberService = Services.MemberService;
                var member = memberService.GetByEmail(model.Email);
-               
-                var iconInfo= member.GetValue("icon").ToString();
-                var icon = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<IconModel>>(iconInfo);
-                var iconId = new Guid(icon.FirstOrDefault().MediaKey);         
-                var iconUrl = Umbraco.Media(iconId).Url(mode: UrlMode.Absolute);
+                var iconUrl = string.Empty;
+                
+                try
+                {
+                    var iconInfo= member.GetValue("icon")?.ToString();
+                    var iconReferenceModel = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<IconReferenceModel>>(iconInfo);
+                    var iconId = new Guid(iconReferenceModel.FirstOrDefault().MediaKey);
+                    iconUrl = Umbraco.Media(iconId)?.Url(mode: UrlMode.Absolute);
+                }
+                catch(ArgumentNullException)
+                {
+                }
+
                 var viewModel = new MemberViewModel
                 {
                     FirstName = (string)member.GetValue("firstName"),
                     LastName = (string)member.GetValue("lastName"),
                     Email = member.Email,
                     Phone = member.GetValue("phone"),
-                    IconUrl = iconUrl
+                    IconUrl = !string.IsNullOrEmpty(iconUrl) ? $"{iconUrl}?width=50&height=50" : string.Empty
                 };
                 return viewModel;
             }
