@@ -17,12 +17,13 @@ namespace IdeoDigital_TestProject.Controllers
     public class LoginController : UmbracoApiController
     {
         [HttpPost]
-        [Obsolete]
         public object Login(CredentialsPostModel model)
         {
-            var isLogin = Members.Login(model.Email, model.Password);
-            if (ModelState.IsValid
-                && isLogin)
+            if(!ModelState.IsValid)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+            if (Members.Login(model.Email, model.Password))
             {
                var memberService = Services.MemberService;
                var member = memberService.GetByEmail(model.Email);
@@ -31,7 +32,7 @@ namespace IdeoDigital_TestProject.Controllers
                 try
                 {
                     var iconInfo= member.GetValue("icon")?.ToString();
-                    var iconReferenceModel = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<IconReferenceModel>>(iconInfo);
+                    var iconReferenceModel = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<MediaReferenceModel>>(iconInfo);
                     var iconId = new Guid(iconReferenceModel.FirstOrDefault().MediaKey);
                     iconUrl = Umbraco.Media(iconId)?.Url(mode: UrlMode.Absolute);
                 }

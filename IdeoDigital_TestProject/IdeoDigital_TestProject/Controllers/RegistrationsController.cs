@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Http;
+using IdeoDigital_TestProject.Extensions;
 using IdeoDigital_TestProject.Models;
 using LightInject;
 using Umbraco.Core;
@@ -20,18 +21,33 @@ namespace IdeoDigital_TestProject.Controllers
     {
 
         [HttpPost]
-        public void Register(RegisterPostModel model)
+        public object Register(RegisterPostModel model)
         {
             if(!ModelState.IsValid)
             {
-                throw new HttpResponseException(HttpStatusCode.Forbidden);
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 
             var memberService = Services.MemberService;
+            IMedia media = null;
 
             if (memberService.GetByEmail(model.Email) != null)
             {
-                throw new HttpResponseException(HttpStatusCode.Forbidden);
+                throw new HttpResponseException(HttpStatusCode.Conflict);
+            }
+
+            if (!string.IsNullOrEmpty(model.IconEncoded))
+            {
+                try
+                {
+                    var bytes = Convert.FromBase64String(model.IconEncoded);
+                    var generatedMediaName = GenerateMediaName(model);
+                    media = CreateMediaFromBytes(bytes, generatedMediaName);
+                }
+                catch (FormatException)
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
             }
 
             var fullName = $"{model.FirstName} {model.LastName}";
@@ -41,42 +57,35 @@ namespace IdeoDigital_TestProject.Controllers
             member.SetValue("lastName", model.LastName);
             member.SetValue("phone", model.Phone);
 
+            if (media != null)
+            {
+                member.SetValue("icon", media.GetMediaReference());
+            }
+
             memberService.Save(member); 
             memberService.SavePassword(member, model.Password);
 
-            if(!string.IsNullOrEmpty(model.IconEncoded))
-            {
-                var bytes = Convert.FromBase64String(model.IconEncoded);
-                CreateIconFromBytes(member, bytes);
-            }
+            return Ok();   
         }
-        private void CreateIconFromBytes(IMember member, byte[] bytes)
+
+
+        private IMedia CreateMediaFromBytes(byte[] bytes, string fileName)
         {   
             var mediaService = Services.MediaService;
             using (var stream = new MemoryStream(bytes))
             {
-                var fileName = GenerateIconName(member);
                 var media = mediaService.CreateMedia(fileName, Constants.System.Root, "Image");
 
                 media.SetValue(Services.ContentTypeBaseServices, "umbracoFile", fileName, stream);
                 mediaService.Save(media);
 
-                var refs = new List<IconReferenceModel>();
-                refs.Add(new IconReferenceModel
-                {
-                    Key = Guid.NewGuid().ToString(),
-                    MediaKey = media.Key.ToString()
-                }
-                );
-
-                member.SetValue("icon", Newtonsoft.Json.JsonConvert.SerializeObject(refs));
-                Services.MemberService.Save(member);
+                return media;
             }
         }
 
-        private string GenerateIconName(IMember member)
+        private string GenerateMediaName(RegisterPostModel model)
         {
-            return $"{member.Id}_{member.Name}_icon.jpg";
+            return $"{model.Email}_icon.jpg";
         }
     }
 }
