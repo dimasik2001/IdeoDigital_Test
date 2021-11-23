@@ -1,0 +1,18 @@
+{
+  "id": "4d361b69-bb7b-4c20-b38d-823d342943e4",
+  "name": "",
+  "form": "786249f2-1609-44e6-a5a8-068c7d132cdd",
+  "active": true,
+  "includeSensitiveData": "True",
+  "workflowTypeId": "470eeb3a-cb15-4b08-9fc0-a2f091583332",
+  "executesOn": "Submitted",
+  "settings": {
+    "Url": "https://localhost:44327/umbraco/api/Registrations/Register",
+    "Method": "POST",
+    "XsltFile": "",
+    "Fields": "[{\"alias\":\"Email\",\"value\":\"1da43fbb-aea3-46e1-dc2c-e2c58e2acd16\",\"staticValue\":\"Email\",\"$$hashKey\":\"object:1168\"},{\"alias\":\"FirstName\",\"value\":\"e8003329-ee87-4a5e-c598-01a287fe6eec\",\"staticValue\":\"FirstName\",\"$$hashKey\":\"object:1176\"},{\"alias\":\"LastName\",\"value\":\"8f335205-9744-419c-b9f3-7d33d91f8541\",\"staticValue\":\"LastName\",\"$$hashKey\":\"object:1178\"},{\"alias\":\"Password\",\"value\":\"19e49f69-843a-4578-9d76-3ca5a3fb4268\",\"staticValue\":\"Password\",\"$$hashKey\":\"object:1180\"},{\"alias\":\"Phone\",\"value\":\"93c25345-9875-4d33-cbb0-03bcd5e6e8fa\",\"staticValue\":\"Phone\",\"$$hashKey\":\"object:1182\"},{\"alias\":\"Icon\",\"value\":\"2cb97cd1-04d0-46ce-c4d6-c9d8a3a82d5c\",\"staticValue\":\"Icon\",\"$$hashKey\":\"object:1184\"}]",
+    "Username": "dimonkalibaba@gmail.com",
+    "Password": "dimasik_kalibis"
+  },
+  "sortOrder": 0
+}
